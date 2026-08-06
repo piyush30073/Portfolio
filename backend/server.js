@@ -1,24 +1,25 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Backend Running 🚀");
+app.get("/api/download-cv", (req, res) => {
+
+    const file = path.join(
+        __dirname,
+        "public",
+        "cv",
+        "Piyush_singh-resume.pdf"
+    );
+
+    res.download(file);
+
 });
 
-app.get("/api/test", (req, res) => {
-  res.json({
-    success: true,
-    message: "Frontend Connected Successfully 🚀",
-  });
-});
-
-const PORT = 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(5000, () => {
+    console.log("Server Running");
 });
