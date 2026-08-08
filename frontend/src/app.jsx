@@ -1,18 +1,17 @@
 import NavBar from "./components/NavBar/NavBar";
 import Hero from "./components/Hero/Hero";
-import Stats from "./components/Stats/Stats";
 import About from "./components/About/About";
-
-
+import Skills from "./components/Skills/Skills";
+import Projects from "./components/Projects/Projects";
 
 function App() {
   return (
     <>
       <NavBar />
       <Hero />
-      <Stats />
       <About />
- 
+      <Skills />
+      <Projects />
     </>
   );
 }

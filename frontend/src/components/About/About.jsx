@@ -1,166 +1,398 @@
 import "./About.css";
-import { FiUser } from "react-icons/fi";
-import { Link } from "react-scroll";
 import {
-  FaHtml5,
-  FaCss3Alt,
-  FaReact,
-  FaNodeJs,
+  FaUser,
+  FaGraduationCap,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaBriefcase,
+  FaRocket,
+  FaCode,
+  FaUsers,
+  FaTrophy,
 } from "react-icons/fa";
-
-import { SiJavascript } from "react-icons/si";
+import { FiDownload } from "react-icons/fi";
+import API from "../../services/api";
+import hero from "../../assets/hero.png";
 
 function About() {
-
-  const skills = [
-
+  const details = [
     {
-      icon:<FaHtml5 />,
-      name:"HTML",
-      value:95
+      icon: <FaUser />,
+      label: "Name",
+      value: "Piyush Singh",
     },
-
     {
-      icon:<FaCss3Alt />,
-      name:"CSS",
-      value:90
+      icon: <FaGraduationCap />,
+      label: "Age",
+      value: "21",
     },
-
     {
-      icon:<SiJavascript />,
-      name:"JavaScript",
-      value:85
+      icon: <FaMapMarkerAlt />,
+      label: "Location",
+      value: "Greater Noida, India",
     },
-
     {
-      icon:<FaReact />,
-      name:"React",
-      value:80
+      icon: <FaEnvelope />,
+      label: "Email",
+      value: "piyush30073@gmail.com",
     },
-
     {
-      icon:<FaNodeJs />,
-      name:"Node.js",
-      value:75
-    }
-
+      icon: <FaBriefcase />,
+      label: "Availability",
+      value: "Open to Work",
+      green: true,
+    },
   ];
 
+  const journey = [
+    {
+      year: "2023 - Present",
+      title: "Full Stack Developer",
+      description:
+        "Building modern web applications and exploring new technologies. Focused on creating scalable and efficient solutions.",
+    },
+    {
+      year: "2022 - 2023",
+      title: "Frontend Developer",
+      description:
+        "Started my journey with frontend development. Learned HTML, CSS, JavaScript and built interactive projects.",
+    },
+    {
+      year: "2021 - 2022",
+      title: "Learning & Exploring",
+      description:
+        "Explored programming fundamentals and developed interest in web development and problem solving.",
+    },
+  ];
+
+  const education = [
+    {
+      year: "2021 - 2025",
+      title: "B.Tech in Computer Science & Engineering",
+      institute: "NIET Greater Noida",
+      description:
+        "Currently pursuing my degree with a strong foundation in programming and software development.",
+    },
+    {
+      year: "2019 - 2021",
+      title: "Senior Secondary (12th)",
+      institute: "CBSE Board",
+      description:
+        "Completed with focus on PCM and Computer Science.",
+    },
+    {
+      year: "2017 - 2019",
+      title: "Secondary (10th)",
+      institute: "CBSE Board",
+      description:
+        "Completed with good academic record.",
+    },
+  ];
+
+  const stats = [
+    {
+      icon: <FaCode />,
+      number: "10+",
+      title: "Projects Completed",
+      description: "Across different technologies",
+    },
+    {
+      icon: <FaBriefcase />,
+      number: "1+",
+      title: "Years of Experience",
+      description: "Building web solutions",
+    },
+    {
+      icon: <FaUsers />,
+      number: "5+",
+      title: "Happy Clients",
+      description: "Satisfied with my work",
+    },
+    {
+      icon: <FaTrophy />,
+      number: "2+",
+      title: "Certifications",
+      description: "Continuous learner",
+    },
+  ];
+
+  const downloadResume = async () => {
+    try {
+      const response = await API.get("/download-cv", {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data])
+      );
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "Piyush_Chauhan_Resume.pdf";
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Resume download failed:", error);
+    }
+  };
+
   return (
+    <section className="about-page" id="about">
 
-<section className="about">
+      {/* ================= ABOUT INTRO ================= */}
 
-<div className="about-left">
+      <div className="about-intro">
 
-<p className="small-title">
+        <div className="about-content">
 
-ABOUT ME
+          <div className="about-heading">
+            <span className="about-label">
+              ABOUT ME
+            </span>
 
-</p>
+            <span className="heading-line"></span>
+            <span className="heading-dot"></span>
+          </div>
 
-<h2>
+          <h1>
+            Get to know
+            <br />
+            <span>me</span> better.
+          </h1>
 
-Who I Am
+          <p className="about-text">
+            I'm a passionate Full Stack Developer who loves
+            building clean, responsive and user-friendly
+            web applications. I enjoy turning complex
+            problems into simple, beautiful and intuitive
+            solutions.
+          </p>
 
-</h2>
+          <div className="personal-details">
 
-<div className="line"></div>
+            {details.map((item, index) => (
+              <div className="personal-row" key={index}>
 
-<p>
+                <div className="personal-label">
+                  <span className="personal-icon">
+                    {item.icon}
+                  </span>
 
-I'm a passionate Full Stack Developer with a strong
-foundation in building scalable web applications.
-I enjoy problem solving and constantly learning
-new technologies.
+                  <span>
+                    {item.label}
+                  </span>
+                </div>
 
-</p>
+                <span className="personal-colon">
+                  :
+                </span>
 
-<Link
-to="about-details"
-smooth={true}
-duration={700}
-offset={-80}
->
+                <span
+                  className={
+                    item.green
+                      ? "personal-value green"
+                      : "personal-value"
+                  }
+                >
+                  {item.value}
+                </span>
 
-<button>
+              </div>
+            ))}
 
-Read More About Me
+          </div>
 
-</button>
+          <button
+            className="about-download"
+            onClick={downloadResume}
+          >
+            Download CV
+            <FiDownload />
+          </button>
 
-</Link>
+        </div>
 
-</div>
+        {/* PROFILE IMAGE */}
 
-<div className="divider"></div>
+        <div className="about-image-wrapper">
 
-<div className="about-right">
+          <div className="about-image-box">
 
-<p className="small-title">
+            <div className="about-circle"></div>
 
-MY SKILLS
+            <div className="about-dots"></div>
 
-</p>
+            <img
+              src={hero}
+              alt="Piyush Chauhan"
+            />
 
-{
+          </div>
 
-skills.map((skill,index)=>(
+        </div>
 
-<div className="skill" key={index}>
+      </div>
 
-<div className="skill-top">
 
-<div className="skill-name">
+      {/* ================= JOURNEY + EDUCATION ================= */}
 
-<span className="skill-icon">
+      <div className="timeline-section">
 
-{skill.icon}
+        {/* JOURNEY */}
 
-</span>
+        <div className="timeline-column">
 
-<span>
+          <div className="timeline-heading">
 
-{skill.name}
+            <div className="timeline-icon">
+              <FaRocket />
+            </div>
 
-</span>
+            <h2>
+              My Journey
+            </h2>
 
-</div>
+          </div>
 
-<span>
+          <div className="timeline">
 
-{skill.value}%
+            {journey.map((item, index) => (
 
-</span>
+              <div
+                className="timeline-item"
+                key={index}
+              >
 
-</div>
+                <span className="timeline-dot"></span>
 
-<div className="progress">
+                <div className="timeline-content">
 
-<div
-className="progress-fill"
-style={{
+                  <span className="timeline-year">
+                    {item.year}
+                  </span>
 
-width:`${skill.value}%`
+                  <h3>
+                    {item.title}
+                  </h3>
 
-}}
->
+                  <p>
+                    {item.description}
+                  </p>
 
-</div>
+                </div>
 
-</div>
+              </div>
 
-</div>
+            ))}
 
-))
+          </div>
 
-}
+        </div>
 
-</div>
 
-</section>
+        {/* EDUCATION */}
 
+        <div className="timeline-column">
+
+          <div className="timeline-heading">
+
+            <div className="timeline-icon">
+              <FaGraduationCap />
+            </div>
+
+            <h2>
+              Education
+            </h2>
+
+          </div>
+
+          <div className="timeline">
+
+            {education.map((item, index) => (
+
+              <div
+                className="timeline-item"
+                key={index}
+              >
+
+                <span className="timeline-dot"></span>
+
+                <div className="timeline-content">
+
+                  <span className="timeline-year">
+                    {item.year}
+                  </span>
+
+                  <h3>
+                    {item.title}
+                  </h3>
+
+                  <span className="timeline-institute">
+                    {item.institute}
+                  </span>
+
+                  <p>
+                    {item.description}
+                  </p>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* ================= STATS ================= */}
+
+      <div className="about-stats">
+
+        {stats.map((item, index) => (
+
+          <div
+            className="about-stat"
+            key={index}
+          >
+
+            <div className="stat-icon">
+              {item.icon}
+            </div>
+
+            <div className="stat-content">
+
+              <div className="stat-number">
+                {item.number}
+              </div>
+
+              <div className="stat-title">
+                {item.title}
+              </div>
+
+              <div className="stat-description">
+                {item.description}
+              </div>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </section>
   );
-
 }
 
 export default About;
