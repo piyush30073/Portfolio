@@ -1,5 +1,5 @@
 const Contact = require("../models/contact.model");
-const transporter = require("../utils/mailer");
+const resend = require("../utils/mailer");
 
 const submitContact = async (req, res) => {
   try {
@@ -27,7 +27,6 @@ const submitContact = async (req, res) => {
       });
     }
 
-
     // =========================
     // SAVE TO MONGODB
     // =========================
@@ -42,18 +41,16 @@ const submitContact = async (req, res) => {
     console.log("MongoDB: Contact saved successfully");
     console.log("Contact ID:", contact._id);
 
-
     // =========================
-    // SEND EMAIL
+    // SEND EMAIL USING RESEND
     // =========================
 
-    console.log("Sending email...");
+    console.log("Sending email through Resend...");
 
-    const mailInfo = await transporter.sendMail({
+    const { data, error } = await resend.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
 
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-
-      to: process.env.EMAIL_USER,
+      to: ["piyush30073@gmail.com"],
 
       replyTo: email,
 
@@ -71,28 +68,22 @@ ${message}
       `,
 
       html: `
-        <div
-          style="
-            font-family: Arial, sans-serif;
-            max-width: 650px;
-            margin: auto;
+        <div style="
+          font-family: Arial, sans-serif;
+          max-width: 650px;
+          margin: auto;
+          padding: 25px;
+          background: #f7f7f7;
+        ">
+
+          <div style="
+            background: #111827;
             padding: 25px;
-            background: #f7f7f7;
-          "
-        >
+            border-radius: 10px;
+            color: white;
+          ">
 
-          <div
-            style="
-              background: #111827;
-              padding: 25px;
-              border-radius: 10px;
-              color: white;
-            "
-          >
-
-            <h2 style="margin-top: 0;">
-              New Portfolio Message
-            </h2>
+            <h2>New Portfolio Message</h2>
 
             <p>
               Someone contacted you through your portfolio website.
@@ -100,36 +91,28 @@ ${message}
 
           </div>
 
-
-          <div
-            style="
-              background: white;
-              padding: 25px;
-              margin-top: 15px;
-              border-radius: 10px;
-            "
-          >
+          <div style="
+            background: white;
+            padding: 25px;
+            margin-top: 15px;
+            border-radius: 10px;
+          ">
 
             <p>
-              <strong>Name:</strong>
-              ${name}
+              <strong>Name:</strong> ${name}
             </p>
 
             <p>
-              <strong>Email:</strong>
-              ${email}
+              <strong>Email:</strong> ${email}
             </p>
 
             <p>
-              <strong>Subject:</strong>
-              ${subject}
+              <strong>Subject:</strong> ${subject}
             </p>
 
             <hr />
 
-            <h3>
-              Message
-            </h3>
+            <h3>Message</h3>
 
             <p>
               ${message}
@@ -141,14 +124,29 @@ ${message}
       `,
     });
 
+    // =========================
+    // RESEND ERROR
+    // =========================
+
+    if (error) {
+      console.error("================================");
+      console.error("RESEND ERROR");
+      console.error("================================");
+
+      console.error(error);
+
+      return res.status(500).json({
+        success: false,
+        message: error.message || "Email could not be sent",
+      });
+    }
+
+    // =========================
+    // SUCCESS
+    // =========================
 
     console.log("Email sent successfully!");
-    console.log("Message ID:", mailInfo.messageId);
-
-
-    // =========================
-    // SUCCESS RESPONSE
-    // =========================
+    console.log("Resend Email ID:", data.id);
 
     return res.status(201).json({
       success: true,
@@ -156,26 +154,13 @@ ${message}
       data: contact,
     });
 
-
   } catch (error) {
 
-    // =========================
-    // ERROR
-    // =========================
-
-    console.log("");
-    console.log("================================");
-    console.log("CONTACT ERROR");
-    console.log("================================");
+    console.error("================================");
+    console.error("CONTACT ERROR");
+    console.error("================================");
 
     console.error(error);
-
-    console.log("================================");
-    console.log("ERROR MESSAGE:");
-    console.log(error.message);
-
-    console.log("================================");
-
 
     return res.status(500).json({
       success: false,
@@ -183,7 +168,6 @@ ${message}
     });
   }
 };
-
 
 module.exports = {
   submitContact,
