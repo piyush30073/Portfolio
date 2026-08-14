@@ -158,7 +158,6 @@ ${message}
     });
 
   } catch (error) {
-
     console.error("================================");
     console.error("CONTACT ERROR");
     console.error("================================");
