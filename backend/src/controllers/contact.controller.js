@@ -46,9 +46,8 @@ const submitContact = async (req, res) => {
     // =========================
 
     console.log("Sending email through Resend...");
-    console.log("BEFORE RESEND");
 
-    const resendPromise = resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
 
       to: ["piyush30073@gmail.com"],
@@ -69,28 +68,22 @@ ${message}
       `,
 
       html: `
-        <div
-          style="
-            font-family: Arial, sans-serif;
-            max-width: 650px;
-            margin: auto;
+        <div style="
+          font-family: Arial, sans-serif;
+          max-width: 650px;
+          margin: auto;
+          padding: 25px;
+          background: #f7f7f7;
+        ">
+
+          <div style="
+            background: #111827;
             padding: 25px;
-            background: #f7f7f7;
-          "
-        >
+            border-radius: 10px;
+            color: white;
+          ">
 
-          <div
-            style="
-              background: #111827;
-              padding: 25px;
-              border-radius: 10px;
-              color: white;
-            "
-          >
-
-            <h2>
-              New Portfolio Message
-            </h2>
+            <h2>New Portfolio Message</h2>
 
             <p>
               Someone contacted you through your portfolio website.
@@ -98,35 +91,28 @@ ${message}
 
           </div>
 
-          <div
-            style="
-              background: white;
-              padding: 25px;
-              margin-top: 15px;
-              border-radius: 10px;
-            "
-          >
+          <div style="
+            background: white;
+            padding: 25px;
+            margin-top: 15px;
+            border-radius: 10px;
+          ">
 
             <p>
-              <strong>Name:</strong>
-              ${name}
+              <strong>Name:</strong> ${name}
             </p>
 
             <p>
-              <strong>Email:</strong>
-              ${email}
+              <strong>Email:</strong> ${email}
             </p>
 
             <p>
-              <strong>Subject:</strong>
-              ${subject}
+              <strong>Subject:</strong> ${subject}
             </p>
 
             <hr />
 
-            <h3>
-              Message
-            </h3>
+            <h3>Message</h3>
 
             <p>
               ${message}
@@ -137,25 +123,6 @@ ${message}
         </div>
       `,
     });
-
-    // =========================
-    // 15 SECOND TIMEOUT
-    // =========================
-
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(
-          new Error("Resend request timed out after 15 seconds")
-        );
-      }, 15000);
-    });
-
-    const { data, error } = await Promise.race([
-      resendPromise,
-      timeoutPromise,
-    ]);
-
-    console.log("AFTER RESEND");
 
     // =========================
     // RESEND ERROR
@@ -170,8 +137,7 @@ ${message}
 
       return res.status(500).json({
         success: false,
-        message:
-          error.message || "Email could not be sent",
+        message: error.message || "Email could not be sent",
       });
     }
 
@@ -201,8 +167,7 @@ ${message}
 
     return res.status(500).json({
       success: false,
-      message:
-        error.message || "Something went wrong",
+      message: error.message || "Something went wrong",
     });
   }
 };
