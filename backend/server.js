@@ -1,10 +1,15 @@
+const dotenv = require("dotenv");
+
+// IMPORTANT:
+// Load environment variables BEFORE importing routes/controllers/mailers.
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
-dotenv.config();
+const contactRoutes = require("./src/routes/contact.routes");
 
 const app = express();
 
@@ -16,10 +21,17 @@ app.use(cors());
 app.use(express.json());
 
 // =========================
+// CONTACT ROUTES
+// =========================
+
+app.use("/api/contact", contactRoutes);
+
+// =========================
 // MONGODB
 // =========================
 
 console.log("MONGO URI exists:", !!process.env.MONGO_URI);
+console.log("RESEND API KEY exists:", !!process.env.RESEND_API_KEY);
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -30,13 +42,6 @@ mongoose
     console.error("MongoDB connection failed:");
     console.error(error.message);
   });
-
-// =========================
-// CONTACT ROUTE
-// =========================
-
-// Keep your existing contact route here.
-// If your project currently uses a route file, keep that route setup.
 
 // =========================
 // RESUME DOWNLOAD
@@ -77,12 +82,8 @@ app.get("/api/test-resend", async (req, res) => {
       message: "Render can reach Resend",
       status: response.status,
     });
-
   } catch (error) {
-    console.error("================================");
     console.error("RESEND CONNECTION ERROR");
-    console.error("================================");
-
     console.error(error);
 
     return res.status(500).json({
